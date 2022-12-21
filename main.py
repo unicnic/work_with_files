@@ -1,30 +1,29 @@
+def count_str_file (file_name):
+    count_str_file = 0
+    with open(file_name, 'r', encoding='utf8') as f:
+        for line in f:
+            count_str_file += 1
+    return count_str_file
 
+def get_text (file_name):
+    f = open(file_name, 'r', encoding='utf8')
+    text = f.readlines()
+    return text
 
-with open('recipes.txt', 'r', encoding='utf8') as f:
-    cook_book = {}
-    for line in f:
-        ingredient = []
-        if line != '\n':
-            dish = line.strip('\n')
-            count_ingrds = f.readline().strip('\n')
-            for i in range(int(count_ingrds)):
-                ingrds_dict = {}
-                ingrds_list = f.readline().strip('\n').split(sep=' | ')
-                ingrds_dict['ingredient_name'] = ingrds_list[0]
-                ingrds_dict['quantity'] = ingrds_list[1]
-                ingrds_dict['measure'] = ingrds_list[2]
-                ingredient.append(ingrds_dict)
-                cook_book[dish] = ingredient
+def sort_list_file_size (file_list):
+    sort_list_file_size = []
+    for file in file_list:
+        sort_list_file_size.append([count_str_file(file), file])
+    sort_list_file_size.sort()
 
+    return sort_list_file_size
 
-def get_shop_list_by_dishes(dishes, person_count):
-    shop_list = {}
-    for dish in dishes:
-        for i in range(len(cook_book[dish])):
-            if cook_book[dish][i]['ingredient_name'] not in shop_list.keys():
-                shop_list[cook_book[dish][i]['ingredient_name']] = {'measure' : cook_book[dish][i]['measure'], 'quantity' : int(cook_book[dish][i]['quantity']) * person_count}
-            else:
-                shop_list[cook_book[dish][i]['ingredient_name']]['quantity'] += int(cook_book[dish][i]['quantity']) * person_count
-    return shop_list
+def join_files (file_list):
+    for count_str, file_name in sort_list_file_size(file_list):
+            with open(file_name, 'r', encoding='utf8') as f:
+                res = open('res.txt', 'a', encoding='utf8')
+                string = file_name + '\n' + str(count_str) + '\n' + "".join(get_text(file_name)) + '\n'
+                res.write(string)
+                res.close()
 
-
+join_files(['1.txt', '2.txt', '3.txt'])
